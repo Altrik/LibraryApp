@@ -1,12 +1,14 @@
-package pl.mysite.Library.controller;
+package pl.mysite.Library.entity;
 
 import java.sql.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 
@@ -22,7 +24,8 @@ public class Book {
 	@NotEmpty
 	private String title;
 	@NotEmpty
-	private List <Author> authors; //wiele do wielu dorobiæ
+	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	private List<Author> authors;
 	@CreationTimestamp
 	private Date dateOfAcquisition;
 	@NotEmpty
@@ -31,12 +34,6 @@ public class Book {
 	
 	public Book () {}
 	public Book (String title, List<Author> authors, Date dateOfAcquisition) {
-		this.title = title;
-		this.authors = authors;
-		this.dateOfAcquisition = dateOfAcquisition;
-	}
-	public Book (long id, String title, List<Author> authors, Date dateOfAcquisition) {
-		this.id = id;
 		this.title = title;
 		this.authors = authors;
 		this.dateOfAcquisition = dateOfAcquisition;
