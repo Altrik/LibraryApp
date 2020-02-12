@@ -20,6 +20,7 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 
+@SuppressWarnings({ "deprecation", "unused" })
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = "pl.mysite.Library")

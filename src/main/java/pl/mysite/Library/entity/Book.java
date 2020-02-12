@@ -1,14 +1,11 @@
 package pl.mysite.Library.entity;
 
 import java.sql.Date;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 
@@ -24,19 +21,22 @@ public class Book {
 	@NotEmpty
 	private String title;
 	@NotEmpty
-	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-	private List<Author> authors;
+	private String author;
 	@CreationTimestamp
 	private Date dateOfAcquisition;
-	@NotEmpty
-	@ColumnDefault("false")
 	private Boolean isBorrowed;
 	
 	public Book () {}
-	public Book (String title, List<Author> authors, Date dateOfAcquisition) {
+	public Book (String title, String author) {
 		this.title = title;
-		this.authors = authors;
+		this.author = author;
+		this.isBorrowed = false;
+	}
+	public Book (String title, String author, Date dateOfAcquisition) {
+		this.title = title;
+		this.author = author;
 		this.dateOfAcquisition = dateOfAcquisition;
+		this.isBorrowed = false;
 	}
 	
 	public long getId() {
@@ -48,11 +48,11 @@ public class Book {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public List<Author> getAuthors() {
-		return authors;
+	public String getAuthor() {
+		return author;
 	}
-	public void setAuthors(List<Author> authors) {
-		this.authors = authors;
+	public void setAuthor(String author) {
+		this.author = author;
 	}
 	public Date getDateOfAcquisition() {
 		return dateOfAcquisition;
