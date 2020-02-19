@@ -4,81 +4,82 @@ $(function () {
     testJS.on("click", function () {
         $(this).toggleClass("test");
     });
-    var searchButtons = $(".searchBtn");
-    searchButtons.on("click", function () {
-        switch ($(this).attr('id')) {
-            case "searchId":
+
+    
+
+
+    /*
+    var forms = $(".searchForm");
+    forms.on("submit", function (event) {
+        console.log("Event done");
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        var formType = $(this).attr('id');
+        console.log(formType);
+        switch (formType) {
+            case "formById":
                 console.log("ID");
                 getSearchResultListById ();
                 break;
-            case "searchAuthor":
+            case "formByAuthor":
                 console.log("Author");
                 getSearchResultListByAuthor ();
                 break;
-            case "searchTitle":
+            case "formByTitle":
                 console.log("Title");
                 getSearchResultListByTitle ();
                 break;
-            case "searchDate":
+            case "formByDate":
                 console.log("Date");
                 getSearchResultListByDate ();
                 break;
-            case "searchStatus":
+            case "formByStatus":
                 console.log("Status");
                 getSearchResultListByStatus ();
                 break;
-        };
+        }
     });
 
     var whenAjaxDone = function (object) {
         console.log("Found books");
         var anchor = $("#searchAnchor");
+        anchor.empty();
         var tableHeader = $("<div id='tableHeader'><table><tr><th>ID</th><th>Title</th><th>Author</th><th>Date of Acquisition</th><th>Status</th></tr>");
         var tableEnd = $("</table></div>");
         anchor.append(tableHeader);
         object.forEach(function (element) {
+            console.log("Entered the Loop");
             var elemID = JSON.stringify(element.id);
+            console.log(elemID);
             var elemTitle = JSON.stringify(element.title);
+            console.log(elemTitle);
             var elemAuthor = JSON.stringify(element.author);
+            console.log(elemAuthor);
             var elemDate = JSON.stringify(element.dateOfAcquisition);
+            console.log(elemDate);
             var elemIsBorrowed = JSON.stringify(element.isBorrowed);
+            console.log(elemIsBorrowed);
 
-            tableHeader.append($("<tr>"));
-
-            tableHeader.append($("<td>"));
-            tableHeader.append(elemID);
-            tableHeader.append($("</td>"));
-
-            tableHeader.append($("<td>"));
-            tableHeader.append(elemTitle);
-            tableHeader.append($("</td>"));
-
-            tableHeader.append($("<td>"));
-            tableHeader.append(elemAuthor);
-            tableHeader.append($("</td>"));
-
-            tableHeader.append($("<td>"));
-            tableHeader.append(elemDate);
-            tableHeader.append($("</td>"));
-
-            tableHeader.append($("<td>"));
-            tableHeader.append(elemIsBorrowed);
-            tableHeader.append($("</td>"));
-
-            tableHeader.append($("</tr>"));
+            var tableContent = "<tr><td>" + elemID + "</td><td>" + elemTitle + "</td><td>" + elemAuthor + "</td><td>" + elemDate + "</td><td>" + elemIsBorrowed + "</td></tr>";
+            tableHeader.append(tableContent);
         });
         tableHeader.append(tableEnd);
     }
     function getSearchResultListById () { 
         $.ajax  ({
-            url: "/searchById",
+            type: "POST",
+            url: "searchById",
             datatype: "json",
+            contentType: "application/json",
         })
         .done(function(object) {
             console.log("SUCCESS");
             whenAjaxDone (object)})
-        .fail(function () {
+        .fail(function (a1, a2, a3) {
             console.log("FAIL");
+            console.log(a1);
+            console.log(a2);
+            console.log(a3);
         })
         .always(function () {
             console.log("DONE");
@@ -87,14 +88,20 @@ $(function () {
 
     function getSearchResultListByTitle () {
         $.ajax  ({
-            url: "/searchByTitle",
+            type: "POST",
+            url: "searchByTitle",
             datatype: "json",
+            //contentType: "application/json",
+            //data: JSON.stringify({id: id, title: title, author: author, dateOfAcquisition: dateOfAcquisition, isBorrowed: isBorrowed})
         })
         .done(function(object) {
             console.log("SUCCESS");
             whenAjaxDone (object)})
-        .fail(function () {
+        .fail(function (a1, a2, a3) {
             console.log("FAIL");
+            console.log(a1);
+            console.log(a2);
+            console.log(a3);
         })
         .always(function () {
             console.log("DONE");
@@ -103,14 +110,20 @@ $(function () {
 
     function getSearchResultListByAuthor () {
         $.ajax  ({
-            url: "/searchByAuthor",
+            type: "POST",
+            url: "searchByAuthor",
             datatype: "json",
+            //contentType: "application/json",
+            //data: JSON.stringify({id: id, title: title, author: author, dateOfAcquisition: dateOfAcquisition, isBorrowed: isBorrowed})
         })
         .done(function(object) {
             console.log("SUCCESS");
             whenAjaxDone (object)})
-        .fail(function () {
+        .fail(function (a1, a2, a3) {
             console.log("FAIL");
+            console.log(a1);
+            console.log(a2);
+            console.log(a3);
         })
         .always(function () {
             console.log("DONE");
@@ -119,14 +132,20 @@ $(function () {
 
     function getSearchResultListByDate () {
         $.ajax  ({
-            url: "/searchByDate",
+            type: "POST",
+            url: "searchByDate",
             datatype: "json",
+            //contentType: "application/json",
+            //data: JSON.stringify({id: id, title: title, author: author, dateOfAcquisition: dateOfAcquisition, isBorrowed: isBorrowed})
         })
         .done(function(object) {
             console.log("SUCCESS");
             whenAjaxDone (object)})
-        .fail(function () {
+        .fail(function (a1, a2, a3) {
             console.log("FAIL");
+            console.log(a1);
+            console.log(a2);
+            console.log(a3);
         })
         .always(function () {
             console.log("DONE");
@@ -135,17 +154,24 @@ $(function () {
 
     function getSearchResultListByStatus () {
         $.ajax  ({
-            url: "/searchByStatus",
+            type: "POST",
+            url: "searchByStatus",
             datatype: "json",
+            //contentType: "application/json",
+            //data: JSON.stringify({id: id, title: title, author: author, dateOfAcquisition: dateOfAcquisition, isBorrowed: isBorrowed})
         })
         .done(function(object) {
             console.log("SUCCESS");
             whenAjaxDone (object)})
-        .fail(function () {
+        .fail(function (a1, a2, a3) {
             console.log("FAIL");
+            console.log(a1);
+            console.log(a2);
+            console.log(a3);
         })
         .always(function () {
             console.log("DONE");
         })
     }
+    */
 });
