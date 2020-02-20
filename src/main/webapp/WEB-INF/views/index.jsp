@@ -14,7 +14,7 @@
 </head>
 <body>
 <p id="testJS">Add book</p>
-<form action=<c:url value='/add'/> method="post">
+<form action=<c:url value='home/add'/> method="post">
     <label>Title
         <input type="text" name="title" required>
     </label>

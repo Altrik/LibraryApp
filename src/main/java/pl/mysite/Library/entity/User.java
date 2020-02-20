@@ -27,21 +27,23 @@ public class User {
 	private Date lastLogIn;
 	@CreationTimestamp
 	private Date created;
-	@NotNull
-	private long points;
 	@ColumnDefault("false")
 	private boolean is_Admin;
 	
 	public User () {}
 	
-	public User(String login, String password, String email, Date lastLogIn, Date created, long points,
-			boolean is_Admin) {
+	public User(String login, String password, String email) {
+		this.login = login;
+		this.password = password;
+		this.email = email;
+	}
+	
+	public User(String login, String password, String email, Date lastLogIn, Date created, Boolean is_Admin) {
 		this.login = login;
 		this.password = password;
 		this.email = email;
 		this.lastLogIn = lastLogIn;
 		this.created = created;
-		this.points = points;
 		this.is_Admin = is_Admin;
 	}
 
@@ -68,12 +70,6 @@ public class User {
 	}
 	public void setLastLogIn(Date lastLogIn) {
 		this.lastLogIn = lastLogIn;
-	}
-	public long getPoints() {
-		return points;
-	}
-	public void setPoints(long points) {
-		this.points = points;
 	}
 	public long getId() {
 		return id;
