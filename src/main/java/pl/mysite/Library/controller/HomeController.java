@@ -44,14 +44,12 @@ public String loginPage () {
 public void login (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	String login = request.getParameter("login");
 	String password = request.getParameter("password");
+	
 	System.out.println(login);
 	System.out.println(password);
 	if (login!=null && password!=null) {
 		User user = userRepo.findByLoginAndPassword(login, password);
-		//User user = new User("Ala", "Kot", "ala@wp.pl", new java.sql.Date(2020, 02, 02), new java.sql.Date(2020, 01, 01), true);
-		System.out.println("Entered 1");
 		if (user!=null) {
-			System.out.println("Entered 2");
 			request.getRequestDispatcher("/home").forward(request, response);
 		}
 	}

@@ -52,13 +52,12 @@ public class Login implements Filter {
 				httpResponse.sendRedirect("http://localhost:8080/Library/login");
 			}
 		}
-		//chain.doFilter(request, response);
+		chain.doFilter(request, response);
 		System.out.println("Redirect inc");
 		httpResponse.sendRedirect("http://localhost:8080/Library/");*/
 	}
-
+	
 	public void init(FilterConfig fConfig) throws ServletException {
-		// TODO Auto-generated method stub
 	}
 
 }

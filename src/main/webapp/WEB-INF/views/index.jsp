@@ -25,7 +25,7 @@
     <br>
     <input type="submit" name="send" value="Add book">
 </form>
-<!-- dodać wyszukiwanie i po wyszukaniu edit i delete -->
+
 <br>
 <p>Search for books</p>
 <form id="formById" class="searchForm" action=<c:url value='searchById'/> method="post">

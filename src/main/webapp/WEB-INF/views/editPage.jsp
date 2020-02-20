@@ -9,10 +9,6 @@
 <meta charset="ISO-8859-1">
 <title>Index</title>
 <link rel="stylesheet" href="<c:url value='/resources/css/style.css'/>">
-<!--
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="<c:url value='/resources/js/app.js'/>"></script> 
--->
 </head>
 <body>
 <form action=<c:url value='/edited'/> method="post">
