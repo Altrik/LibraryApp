@@ -23,7 +23,6 @@ public class LoginController {
 	
 	@RequestMapping(value="/", method=RequestMethod.GET) // "/"
 	public String loginPage () {
-		System.out.println("loginPage");
 		return "loginPage";
 	}
 
@@ -31,9 +30,7 @@ public class LoginController {
 	public void login (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String login = request.getParameter("login");
 		String password = request.getParameter("password");
-		
-		System.out.println(login);
-		System.out.println(password);
+	
 		if (login!=null && password!=null) {
 			User user = userRepo.findByLoginAndPassword(login, password);
 			if (user!=null) {

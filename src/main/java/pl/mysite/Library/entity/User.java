@@ -4,7 +4,6 @@ import java.sql.Date;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
@@ -12,17 +11,18 @@ import org.hibernate.annotations.CreationTimestamp;
 @Entity
 @Table(name="Users")
 public class User {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	@NotEmpty
     @Column(unique = true)
-	private String login; //rêcznie sprawdzaæ w czy ok
+	private String login; 
 	@NotEmpty
 	private String password;
 	@NotEmpty
     @Column(unique = true)
-	private String email; //rêcznie sprawdzaæ w czy ok
+	private String email; 
 	@CreationTimestamp
 	private Date lastLogIn;
 	@CreationTimestamp
@@ -31,6 +31,11 @@ public class User {
 	private boolean is_Admin;
 	
 	public User () {}
+	
+	public User(String login, String password) {
+		this.login = login;
+		this.password = password;
+	}
 	
 	public User(String login, String password, String email) {
 		this.login = login;
@@ -46,14 +51,14 @@ public class User {
 		this.created = created;
 		this.is_Admin = is_Admin;
 	}
-
+	
 	public String getLogin() {
 		return login;
 	}
 	public void setLogin(String login) {
 		this.login = login;
 	}
-	public String getPassword() { //Zasoliæ
+	public String getPassword() { 
 		return password;
 	}
 	public void setPassword(String password) {

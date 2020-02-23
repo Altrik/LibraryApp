@@ -14,7 +14,7 @@
 </head>
 <body>
 <p id="testJS">Add book</p>
-<form action=<c:url value='/admin/add'/> method="post"> <!-- 'add' -->
+<form action=<c:url value='/admin/add'/> method="post"> 
     <label>Title
         <input type="text" name="title" required>
     </label>
@@ -28,31 +28,31 @@
 
 <br>
 <p>Search for books</p>
-<form id="formById" class="searchForm" action=<c:url value='/admin/searchById'/> method="post"> <!-- 'searchById' -->
+<form id="formById" class="searchForm" action=<c:url value='/admin/searchById'/> method="post"> 
     <label>ID
         <input type="number" name="id">
         <input id="searchId" class="searchBtn" type="submit" name="send" value="Search by ID"><br>
     </label><br>
 </form>
-<form id="formByAuthor" class="searchForm" action=<c:url value='/admin/searchByAuthor'/> method="post"> <!-- 'searchByAuthor' -->
+<form id="formByAuthor" class="searchForm" action=<c:url value='/admin/searchByAuthor'/> method="post"> 
     <label>Author
         <input type="text" name="author">
         <input id="searchAuthor" class="searchBtn" type="submit" name="send" value="Search by Author"><br>
     </label><br>
 </form>
-<form id="formByTitle" class="searchForm" action=<c:url value='/admin/searchByTitle'/> method="post"> <!-- 'searchByTitle' -->
+<form id="formByTitle" class="searchForm" action=<c:url value='/admin/searchByTitle'/> method="post"> 
     <label>Title
         <input type="text" name="title">
         <input id="searchTitle" class="searchBtn" type="submit" name="send" value="Search by Title"><br>
     </label><br>
 </form>
-<form id="formByDate" class="searchForm" action=<c:url value='/admin/searchByDate'/> method="post"> <!-- 'searchByDate' -->
+<form id="formByDate" class="searchForm" action=<c:url value='/admin/searchByDate'/> method="post"> 
     <label>Date of Acquisition
         <input type="date" name="dateOfAcquisition">
         <input id="searchDate" class="searchBtn" type="submit" name="send" value="Search by Date of Acquisition">
     </label><br><br>
 </form>
-<form id="formByStatus" class="searchForm" action=<c:url value='/admin/searchByStatus'/> method="post"> <!-- 'searchByStatus' -->
+<form id="formByStatus" class="searchForm" action=<c:url value='/admin/searchByStatus'/> method="post"> 
     <label>Status<br>
         <input type="radio" name="isBorrowed" value="true">Borrowed<br>
         <input type="radio" name="isBorrowed" value="false">Not Borrowed<br>

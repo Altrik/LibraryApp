@@ -11,7 +11,7 @@
 </head>
 <body>
 <p>Sign In</p>
-<form action=<c:url value='/'/> method="post"> <!-- '/' -->
+<form action=<c:url value='/'/> method="post"> 
 <label>Login
     <input type="text" name="login">
 </label><br>
@@ -20,7 +20,7 @@
 </label><br>
 <input type="submit" name="send" value="Sign In"><br>
 </form>
-<form action=<c:url value='/register'/> method="post"> <!-- '/register' -->
+<form action=<c:url value='/register'/> method="post"> 
 <p>Register</p>
 <label>Login
     <input type="text" name="login">
