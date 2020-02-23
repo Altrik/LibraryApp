@@ -18,7 +18,7 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import pl.mysite.Library.entity.User;
 import pl.mysite.Library.repository.UserRepository;
 
-//@WebFilter("/home/*")
+@WebFilter("/admin/*")
 public class Login implements Filter {
 	
 	@Autowired
@@ -31,33 +31,35 @@ public class Login implements Filter {
 	}
 
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		/*
-		HttpServletRequest httpRequest = (HttpServletRequest) request;
-		HttpServletResponse httpResponse = (HttpServletResponse) response;
-		
-		SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
-		
-		System.out.println("Filter works");
 
+		System.out.println("Filter works");
+		//chain.doFilter(request, response);
+		
+		HttpServletRequest httpRequest = (HttpServletRequest) request;
+		//HttpServletResponse httpResponse = (HttpServletResponse) response;
+		
 		HttpSession session = httpRequest.getSession();
 		String login = (String) session.getAttribute("login");
 		String password = (String) session.getAttribute("password");
+		
+		System.out.println(login);
+		System.out.println(password);
+		
 		if (login!=null && password!=null) {
-			chain.doFilter(request, response);
 			User user = userRepo.findByLoginAndPassword(login, password);
-			System.out.println(user);
 			if (user!=null) {//Zrobiæ admin nie admin
 				chain.doFilter(request, response);
 			} else {
-				httpResponse.sendRedirect("http://localhost:8080/Library/login");
+				System.out.println("Redirect1");
+				request.getRequestDispatcher("/WEB-INF/views/loginPage.jsp").forward(request, response);
 			}
 		}
-		chain.doFilter(request, response);
-		System.out.println("Redirect inc");
-		httpResponse.sendRedirect("http://localhost:8080/Library/");*/
+		System.out.println("Redirect2");
+		request.getRequestDispatcher("/WEB-INF/views/loginPage.jsp").forward(request, response);
 	}
 	
-	public void init(FilterConfig fConfig) throws ServletException {
+	public void init(FilterConfig filterConfig) throws ServletException {
+	    //SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, filterConfig.getServletContext());
 	}
 
 }

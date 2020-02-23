@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="<c:url value='/resources/css/style.css'/>">
 </head>
 <body>
-<form action=<c:url value='/edited'/> method="post">
+<form action=<c:url value='/edited'/> method="post"> <!-- '/edited' -->
 <%
     Book book = (Book) request.getAttribute("Book");
 %>
