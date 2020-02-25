@@ -21,12 +21,12 @@ public class LoginController {
 	@Autowired
 	UserRepository userRepo;
 	
-	@RequestMapping(value="/", method=RequestMethod.GET) // "/"
+	@RequestMapping(value="/", method=RequestMethod.GET) 
 	public String loginPage () {
 		return "loginPage";
 	}
 
-	@RequestMapping(value="/", method=RequestMethod.POST) // "/"
+	@RequestMapping(value="/", method=RequestMethod.POST) 
 	public void login (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String login = request.getParameter("login");
 		String password = request.getParameter("password");
@@ -34,23 +34,31 @@ public class LoginController {
 		if (login!=null && password!=null) {
 			User user = userRepo.findByLoginAndPassword(login, password);
 			if (user!=null) {
+				Boolean isAdmin = user.isIs_Admin();
+				
 				HttpSession session = request.getSession();
 				session.setAttribute("login", login);
 				session.setAttribute("password", password);
-				request.getRequestDispatcher("/admin/home").forward(request, response); // "/home"
+				session.setAttribute("isAdmin", isAdmin);
+				if (isAdmin==true) {
+					request.getRequestDispatcher("/admin/home").forward(request, response);
+				} else {
+					request.getRequestDispatcher("/user/home").forward(request, response);
+				}
+				
 			}
 		}
-		response.sendRedirect("http://localhost:8080/Library/"); // "/"
+		response.sendRedirect("http://localhost:8080/Library/");
 	}
 	
-	@RequestMapping(value="/register", method=RequestMethod.POST) // "/register"
+	@RequestMapping(value="/register", method=RequestMethod.POST) 
 	public void registerUser (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String login = request.getParameter("login");
 		String password = request.getParameter("password");
 		String email = request.getParameter("email");
 		User user = new User (login, password, email);
 		userRepo.save(user);
-		response.sendRedirect("http://localhost:8080/Library/"); // "/"
+		response.sendRedirect("http://localhost:8080/Library/");
 	}
 	
 }

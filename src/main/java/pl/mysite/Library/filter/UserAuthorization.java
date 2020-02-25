@@ -12,21 +12,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 
-@WebFilter("/admin/*")
-public class Login implements Filter {
+@WebFilter("/user/*")
+public class UserAuthorization implements Filter {
 
-	
-    public Login() {
+
+    public UserAuthorization() {
     }
-    
-	public void init(FilterConfig filterConfig) throws ServletException {
-	}
 
+
+    public void init(FilterConfig fConfig) throws ServletException {
+	}
+    
 	public void destroy() {
 	}
 
+
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		
 		HttpSession session = httpRequest.getSession();
@@ -34,7 +35,7 @@ public class Login implements Filter {
 		String password = (String) session.getAttribute("password");
 		Boolean isAdmin	=	(Boolean) session.getAttribute("isAdmin");
 		
-		if (login!=null && password!=null && isAdmin==true) {
+		if (login!=null && password!=null && isAdmin==false) {
 			chain.doFilter(request, response);	
 		} else {
 			request.getRequestDispatcher("/WEB-INF/views/loginPage.jsp").forward(request, response);

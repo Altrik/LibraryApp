@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import pl.mysite.Library.repository.UserRepository;
 import pl.mysite.Library.repository.BookRepository;
 import pl.mysite.Library.entity.Book;
 
@@ -25,9 +24,6 @@ public class HomeController {
 	
 @Autowired
 BookRepository bookRepo;
-
-@Autowired
-UserRepository userRepo;
 
 @RequestMapping(value="/home")
 public String home () {
