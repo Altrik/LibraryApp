@@ -39,7 +39,7 @@ public class Login implements Filter {
 		} else {
 			request.getRequestDispatcher("/WEB-INF/views/loginPage.jsp").forward(request, response);
 		}
-		request.getRequestDispatcher("/WEB-INF/views/loginPage.jsp").forward(request, response);
+		//request.getRequestDispatcher("/WEB-INF/views/loginPage.jsp").forward(request, response);
 	}
 
 }

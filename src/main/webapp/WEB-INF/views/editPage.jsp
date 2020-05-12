@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="<c:url value='/resources/css/style.css'/>">
 </head>
 <body>
-<form action=<c:url value='/edited'/> method="post"> 
+<form action=<c:url value='http://localhost:8080/Library/admin/edited'/> method="post"> 
 <%
     Book book = (Book) request.getAttribute("Book");
 %>
@@ -21,6 +21,9 @@
 </label><br>
 <label>Author
     <input type="text" name="author" value="<%= book.getAuthor() %>">
+</label><br>
+<label>Release Date
+    <input type="number" name="releaseDate" min="1900" max="2099" step="1" value="<%= book.getReleaseDate() %>">
 </label><br>
 <label>Date of Acquisition
     <input type="date" name="dateOfAcquisition" value="<%= book.getDateOfAcquisition() %>">

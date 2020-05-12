@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 
@@ -22,19 +23,24 @@ public class Book {
 	private String title;
 	@NotEmpty
 	private String author;
+	private int releaseDate;
 	@CreationTimestamp
 	private Date dateOfAcquisition;
 	private Boolean isBorrowed;
+	@ManyToOne
+	private User borrowedTo;
 	
 	public Book () {}
-	public Book (String title, String author) {
+	public Book (String title, String author, int releaseDate) {
 		this.title = title;
 		this.author = author;
+		this.releaseDate = releaseDate;
 		this.isBorrowed = false;
 	}
-	public Book (String title, String author, Date dateOfAcquisition) {
+	public Book (String title, String author, int releaseDate, Date dateOfAcquisition) {
 		this.title = title;
 		this.author = author;
+		this.releaseDate = releaseDate;
 		this.dateOfAcquisition = dateOfAcquisition;
 		this.isBorrowed = false;
 	}
@@ -66,7 +72,17 @@ public class Book {
 	public void setIsBorrowed(Boolean isBorrowed) {
 		this.isBorrowed = isBorrowed;
 	}
-	
-	
+	public User getBorrowedTo() {
+		return borrowedTo;
+	}
+	public void setBorrowedTo(User borrowedTo) {
+		this.borrowedTo = borrowedTo;
+	}
+	public int getReleaseDate() {
+		return releaseDate;
+	}
+	public void setReleaseDate(int releaseDate) {
+		this.releaseDate = releaseDate;
+	}
 	
 }

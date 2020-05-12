@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import pl.mysite.Library.repository.BookRepository;
 import pl.mysite.Library.entity.Book;
+import pl.mysite.Library.entity.User;
 
 @Controller
 @RequestMapping("/admin") 
@@ -32,7 +33,7 @@ public String home () {
 
 @RequestMapping(value="/add", method=RequestMethod.POST) 
 public void addBook (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	Book book = new Book (request.getParameter("title"), request.getParameter("author"));
+	Book book = new Book (request.getParameter("title"), request.getParameter("author"), Integer.parseInt(request.getParameter("releaseDate")));
 	bookRepo.save(book);
 	request.getRequestDispatcher("/admin/home").forward(request, response); 
 }
@@ -43,7 +44,7 @@ public void deleteBook (@PathVariable String id, HttpServletRequest request, Htt
 	response.sendRedirect("http://localhost:8080/Library/admin/home"); 
 }
 
-@RequestMapping(value="/status/{id}", method= {RequestMethod.GET, RequestMethod.POST}) 
+@RequestMapping(value="/status/{id}", method= {RequestMethod.GET, RequestMethod.POST}) // Do zmiany
 public void changeStatusOfBook (@PathVariable String id, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	Book book = bookRepo.findById(Long.parseLong(id)).get(0);
 	if (book.getIsBorrowed() == true) {
@@ -72,6 +73,7 @@ public void saveEditedBook (HttpServletRequest request, HttpServletResponse resp
 	Book book = bookRepo.findById(Long.parseLong(request.getParameter("id"))).get(0);
 	book.setTitle(request.getParameter("title"));
 	book.setAuthor(request.getParameter("author"));
+	book.setReleaseDate(Integer.parseInt(request.getParameter("releaseDate")));
 	
 	java.sql.Date sqlDate = java.sql.Date.valueOf(request.getParameter("dateOfAcquisition"));
 	java.sql.Date fixedSqlDate = new java.sql.Date(sqlDate.getTime()+24*60*60*1000);
@@ -118,6 +120,16 @@ public void searchByStatus (HttpServletRequest request, HttpServletResponse resp
 	Boolean isBorrowed = Boolean.parseBoolean(request.getParameter("isBorrowed"));
 	List <Book> bookList = bookRepo.findByIsBorrowed(isBorrowed);
 	request.setAttribute("bookList", bookList);
-	request.getRequestDispatcher("/admin/home").forward(request, response); // "/home"
+	request.getRequestDispatcher("/admin/home").forward(request, response); 
 }
+
+@RequestMapping(value="/searchByReleaseDate", method=RequestMethod.POST) 
+@ResponseBody
+public void searchByReleaseDate (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	int releaseDate = Integer.parseInt(request.getParameter("releaseDate"));
+	List <Book> bookList = bookRepo.findByReleaseDate(releaseDate);
+	request.setAttribute("bookList", bookList);
+	request.getRequestDispatcher("/admin/home").forward(request, response);
+}
+
 }

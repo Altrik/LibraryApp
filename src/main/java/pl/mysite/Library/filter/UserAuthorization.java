@@ -33,14 +33,14 @@ public class UserAuthorization implements Filter {
 		HttpSession session = httpRequest.getSession();
 		String login = (String) session.getAttribute("login");
 		String password = (String) session.getAttribute("password");
-		Boolean isAdmin	=	(Boolean) session.getAttribute("isAdmin");
+		//Boolean isAdmin	=	(Boolean) session.getAttribute("isAdmin");
 		
-		if (login!=null && password!=null && isAdmin==false) {
+		if (login!=null && password!=null/* && isAdmin==false*/) {
 			chain.doFilter(request, response);	
 		} else {
 			request.getRequestDispatcher("/WEB-INF/views/loginPage.jsp").forward(request, response);
 		}
-		request.getRequestDispatcher("/WEB-INF/views/loginPage.jsp").forward(request, response);
+		//request.getRequestDispatcher("/WEB-INF/views/loginPage.jsp").forward(request, response);
 	}
 
 }

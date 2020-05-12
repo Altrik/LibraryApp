@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,22 +31,24 @@ public class LoginController {
 	public void login (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String login = request.getParameter("login");
 		String password = request.getParameter("password");
-	
+		
 		if (login!=null && password!=null) {
-			User user = userRepo.findByLoginAndPassword(login, password);
-			if (user!=null) {
-				Boolean isAdmin = user.isIs_Admin();
-				
-				HttpSession session = request.getSession();
-				session.setAttribute("login", login);
-				session.setAttribute("password", password);
-				session.setAttribute("isAdmin", isAdmin);
-				if (isAdmin==true) {
-					request.getRequestDispatcher("/admin/home").forward(request, response);
-				} else {
-					request.getRequestDispatcher("/user/home").forward(request, response);
+				User userTest = userRepo.findByLogin(login);
+				String salt = userTest.getSalt();
+				User user = userRepo.findByLoginAndPassword(login, BCrypt.hashpw(password, salt));
+			if (BCrypt.checkpw(password, user.getPassword())) {
+				if (user!=null) {			
+					HttpSession session = request.getSession();
+					session.setAttribute("login", login);
+					session.setAttribute("password", user.getPassword());
+					session.setAttribute("Id", user.getId());
+					session.setAttribute("isAdmin", user.isIs_Admin());
+					if (user.isIs_Admin()==true) {
+						request.getRequestDispatcher("/admin/home").forward(request, response);
+					} else {
+						request.getRequestDispatcher("/user/borrowedBooks").forward(request, response);
+					}
 				}
-				
 			}
 		}
 		response.sendRedirect("http://localhost:8080/Library/");
@@ -54,9 +57,10 @@ public class LoginController {
 	@RequestMapping(value="/register", method=RequestMethod.POST) 
 	public void registerUser (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String login = request.getParameter("login");
-		String password = request.getParameter("password");
+		String salt = BCrypt.gensalt();
+		String password = BCrypt.hashpw(request.getParameter("password"), salt);
 		String email = request.getParameter("email");
-		User user = new User (login, password, email);
+		User user = new User (login, password, salt, email);
 		userRepo.save(user);
 		response.sendRedirect("http://localhost:8080/Library/");
 	}

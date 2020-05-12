@@ -13,6 +13,17 @@
 <script src="<c:url value='/resources/js/app.js'/>"></script> -->
 </head>
 <body>
+<p>Borrowed books</p>
+<% 
+    List <Book> borrowedBooks = (List <Book>) request.getAttribute("borrowedBooks");
+    if (borrowedBooks != null) {
+        %><div id='tableBorrowedHeader'><table><tr><th>ID</th><th>Title</th><th>Author</th><th>Release Date</th></tr><%
+        for (Book book : borrowedBooks) {
+            %><tr><td><%= book.getId() %></td><td><%= book.getTitle() %></td><td><%= book.getAuthor() %></td><td><%= book.getReleaseDate() %></td></tr><%
+        }%></table><%
+    }
+%>
+
 <p>Search for books</p>
 <form id="formById" class="searchForm" action=<c:url value='/user/searchById'/> method="post"> 
     <label>ID
@@ -38,6 +49,12 @@
         <input id="searchDate" class="searchBtn" type="submit" name="send" value="Search by Date of Acquisition">
     </label><br><br>
 </form>
+<form id="formByReleaseDate" class="searchForm" action=<c:url value='/user/searchByReleaseDate'/> method="post"> 
+    <label>Release Date<br>
+        <input type="number" name="releaseDate" min="1900" max="2099" step="1" value="2020" name="releaseDate">
+        <input id="searchStatus" class="searchBtn" type="submit" name="send" value="Search by Release Date">
+    </label><br><br>
+</form>
 <form id="formByStatus" class="searchForm" action=<c:url value='/user/searchByStatus'/> method="post"> 
     <label>Status<br>
         <input type="radio" name="isBorrowed" value="true">Borrowed<br>
@@ -50,10 +67,11 @@
     <% 
         List <Book> bookList = (List <Book>) request.getAttribute("bookList");
         if (bookList != null) {
-            %><div id='tableHeader'><table><tr><th>ID</th><th>Title</th><th>Author</th><th>Date of Acquisition</th><th>Status</th></tr><%
+            %><div id='tableHeader'><table><tr><th>ID</th><th>Title</th><th>Author</th><th>Release Date</th><th>Date of Acquisition</th><th>Status</th></tr><%
             for (Book book : bookList) {
-                %><tr><td><%= book.getId() %></td><td><%= book.getTitle() %></td><td><%= book.getAuthor() %></td><td><%= book.getDateOfAcquisition() %></td><td><%= book.getIsBorrowed() %></td></tr><%
-            }
+                %><tr><td><%= book.getId() %></td><td><%= book.getTitle() %></td><td><%= book.getAuthor() %></td><td><%= book.getReleaseDate() %></td>
+                    <td><%= book.getDateOfAcquisition() %></td><td><%= book.getIsBorrowed() %></td></tr><%
+            }%></table><%
         }
     %>
 </body>

@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,9 +24,28 @@ public class UserController {
 	@Autowired
 	BookRepository bookRepo;
 	
+	
 	@RequestMapping(value="/home")
 	public String home () {
 		return "userIndex";
+	}
+	
+	
+	@RequestMapping(value="/borrowedBooks") 
+	public void home (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession session = request.getSession();
+		Long id = (Long) session.getAttribute("Id");
+		List <Book> borrowedBooks = bookRepo.findBorrowedByUser(id);
+		request.setAttribute("borrowedBooks", borrowedBooks);
+		request.getRequestDispatcher("/user/home").forward(request, response);
+	}
+	
+	@RequestMapping(value="/searchById", method=RequestMethod.POST) 
+	public void searchById (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		long id = Long.parseLong(request.getParameter("id"));
+		List <Book> bookList = bookRepo.findById(id);
+		request.setAttribute("bookList", bookList);
+		request.getRequestDispatcher("/user/home").forward(request, response);
 	}
 	
 	@RequestMapping(value="/searchByAuthor", method=RequestMethod.POST) 
@@ -57,7 +77,15 @@ public class UserController {
 		Boolean isBorrowed = Boolean.parseBoolean(request.getParameter("isBorrowed"));
 		List <Book> bookList = bookRepo.findByIsBorrowed(isBorrowed);
 		request.setAttribute("bookList", bookList);
-		request.getRequestDispatcher("/user/home").forward(request, response); // "/home"
+		request.getRequestDispatcher("/user/home").forward(request, response);
 	}
 	
+	@RequestMapping(value="/searchByReleaseDate", method=RequestMethod.POST) 
+	@ResponseBody
+	public void searchByReleaseDate (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		int releaseDate = Integer.parseInt(request.getParameter("releaseDate"));
+		List <Book> bookList = bookRepo.findByReleaseDate(releaseDate);
+		request.setAttribute("bookList", bookList);
+		request.getRequestDispatcher("/user/home").forward(request, response);
+	}
 }
