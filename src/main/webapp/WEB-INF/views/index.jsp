@@ -35,6 +35,12 @@
         <input id="searchId" class="searchBtn" type="submit" name="send" value="Search by ID"><br>
     </label><br>
 </form>
+<form id="formByUserId" class="searchForm" action=<c:url value='/admin/searchByUserId'/> method="post"> 
+    <label>User ID
+        <input type="number" name="id">
+        <input id="searchUserId" class="searchBtn" type="submit" name="send" value="Search by User ID"><br>
+    </label><br>
+</form>
 <form id="formByAuthor" class="searchForm" action=<c:url value='/admin/searchByAuthor'/> method="post"> 
     <label>Author
         <input type="text" name="author">
@@ -76,7 +82,13 @@
                 %><tr><td><%= book.getId() %></td><td><%= book.getTitle() %></td><td><%= book.getAuthor() %></td><td><%= book.getReleaseDate() %></td>
                     <td><%= book.getDateOfAcquisition() %></td><td><%= book.getIsBorrowed() %></td>
                     <td><a href="http://localhost:8080/Library/admin/delete/<%= book.getId() %>">Delete</a></td>
-                    <td><a href="http://localhost:8080/Library/admin/status/<%= book.getId() %>">Change Status</a></td>
+                    <% 
+                        if (book.getIsBorrowed()==false) { 
+                            %><td><a href="http://localhost:8080/Library/admin/status/<%= book.getId() %>">Lend Book</a></td><%
+                        } else {
+                            %><td><a href="http://localhost:8080/Library/admin/return/<%= book.getId() %>">Return Book</a></td><%
+                        }
+                    %>
                     <td><a href="http://localhost:8080/Library/admin/edit/<%= book.getId() %>">Edit</a></td></tr><%
             }%></table><%
         }

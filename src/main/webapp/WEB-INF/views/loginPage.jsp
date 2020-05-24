@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Index</title>
+<title>Login Page</title>
 <link rel="stylesheet" href="<c:url value='/resources/css/style.css'/>">
 </head>
 <body>

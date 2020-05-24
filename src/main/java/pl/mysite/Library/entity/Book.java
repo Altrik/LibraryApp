@@ -27,8 +27,6 @@ public class Book {
 	@CreationTimestamp
 	private Date dateOfAcquisition;
 	private Boolean isBorrowed;
-	@ManyToOne
-	private User borrowedTo;
 	
 	public Book () {}
 	public Book (String title, String author, int releaseDate) {
@@ -71,12 +69,6 @@ public class Book {
 	}
 	public void setIsBorrowed(Boolean isBorrowed) {
 		this.isBorrowed = isBorrowed;
-	}
-	public User getBorrowedTo() {
-		return borrowedTo;
-	}
-	public void setBorrowedTo(User borrowedTo) {
-		this.borrowedTo = borrowedTo;
 	}
 	public int getReleaseDate() {
 		return releaseDate;

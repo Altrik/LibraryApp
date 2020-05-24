@@ -1,6 +1,10 @@
 package pl.mysite.Library.controller;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -16,7 +20,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import pl.mysite.Library.repository.BookRepository;
+import pl.mysite.Library.repository.RentalRepository;
+import pl.mysite.Library.repository.UserRepository;
 import pl.mysite.Library.entity.Book;
+import pl.mysite.Library.entity.Rental;
 import pl.mysite.Library.entity.User;
 
 @Controller
@@ -25,6 +32,12 @@ public class HomeController {
 	
 @Autowired
 BookRepository bookRepo;
+
+@Autowired
+UserRepository userRepo;
+
+@Autowired
+RentalRepository rentalRepo;
 
 @RequestMapping(value="/home")
 public String home () {
@@ -44,21 +57,81 @@ public void deleteBook (@PathVariable String id, HttpServletRequest request, Htt
 	response.sendRedirect("http://localhost:8080/Library/admin/home"); 
 }
 
-@RequestMapping(value="/status/{id}", method= {RequestMethod.GET, RequestMethod.POST}) // Do zmiany
+@RequestMapping(value="/status/{id}", method= {RequestMethod.GET, RequestMethod.POST})
 public void changeStatusOfBook (@PathVariable String id, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	Book book = bookRepo.findById(Long.parseLong(id)).get(0);
-	if (book.getIsBorrowed() == true) {
-		book.setIsBorrowed(false);
-	} else if (book.getIsBorrowed() == false) {
-		book.setIsBorrowed(true);
-	}
+	Book book = bookRepo.findById(Long.parseLong(id));
+	request.setAttribute("Book", book);
+	request.getRequestDispatcher("/admin/lendBook").forward(request, response);
+}
+
+@RequestMapping(value="/lendBook", method={RequestMethod.GET, RequestMethod.POST})  
+public String lendPage () {
+	return "lendPage"; 
+}
+
+@RequestMapping(value="/lentBook", method= {RequestMethod.GET, RequestMethod.POST})
+public void lentBook (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	Book book = bookRepo.findById(Long.parseLong((String) request.getParameter("book_id")));
+	User user = userRepo.findById(Long.parseLong((String) request.getParameter("id")));
+	
+	book.setIsBorrowed(true);
+	Rental rental = new Rental(book, user);
+	
 	bookRepo.save(book);
-	response.sendRedirect("http://localhost:8080/Library/admin/home"); 
+	rentalRepo.save(rental);
+	response.sendRedirect("http://localhost:8080/Library/admin/home");
+}
+
+@RequestMapping(value="return/{id}", method = {RequestMethod.GET, RequestMethod.POST})
+public void returnPage (@PathVariable String id, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	Book book = bookRepo.findById(Long.parseLong(id));
+	Rental rental = rentalRepo.findByBook(book);
+	
+	LocalDate currentDate = LocalDate.now();
+	String [] dateOfRentalTokens = rental.getDayOfRental().toString().split("-");
+	LocalDate dateOfRental = LocalDate.of(Integer.parseInt(dateOfRentalTokens[0]), Integer.parseInt(dateOfRentalTokens[1]), Integer.parseInt(dateOfRentalTokens[2]));
+		
+	long days = dateOfRental.until(currentDate, ChronoUnit.DAYS);
+
+	System.out.println(days);
+	
+	Double price = 0.0;
+	
+	if (days>14) {
+		price += 0.1*(days-14);
+	} 
+	if (days>21) {
+		price += 0.15*(days-21);
+	}
+	if (days>28) {
+		price += 0.25*(days-28);
+	}
+
+	request.setAttribute("Days", days);
+	request.setAttribute("Price", price);
+	request.setAttribute("Book", book);
+	request.setAttribute("Rental", rental);
+	request.getRequestDispatcher("/admin/returnBook").forward(request, response);
+}
+
+@RequestMapping(value="/returnBook", method={RequestMethod.GET, RequestMethod.POST})  
+public String returnPage () {
+	return "returnPage"; 
+}
+
+@RequestMapping(value="/returnedBook/{id}", method= {RequestMethod.GET, RequestMethod.POST})
+public void returnBook (@PathVariable String id, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	Book book = bookRepo.findById(Long.parseLong(id));
+	Rental rental = rentalRepo.findByBook(book);
+	book.setIsBorrowed(false);
+	rentalRepo.delete(rental);
+	bookRepo.save(book);
+	response.sendRedirect("http://localhost:8080/Library/admin/home");
 }
 
 @RequestMapping(value="/edit/{id}", method={RequestMethod.GET, RequestMethod.POST})
 public void editBook (@PathVariable String id, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	Book book = bookRepo.findById(Long.parseLong(id)).get(0);
+	Book book = bookRepo.findById(Long.parseLong(id));
 	request.setAttribute("Book", book);
 	request.getRequestDispatcher("/admin/editBook").forward(request, response); 
 }
@@ -70,7 +143,7 @@ public String editPage () {
 
 @RequestMapping(value="/edited", method={RequestMethod.GET, RequestMethod.POST}) 
 public void saveEditedBook (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	Book book = bookRepo.findById(Long.parseLong(request.getParameter("id"))).get(0);
+	Book book = bookRepo.findById(Long.parseLong(request.getParameter("id")));
 	book.setTitle(request.getParameter("title"));
 	book.setAuthor(request.getParameter("author"));
 	book.setReleaseDate(Integer.parseInt(request.getParameter("releaseDate")));
@@ -86,7 +159,19 @@ public void saveEditedBook (HttpServletRequest request, HttpServletResponse resp
 @RequestMapping(value="/searchById", method=RequestMethod.POST) 
 public void searchById (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	long id = Long.parseLong(request.getParameter("id"));
-	List <Book> bookList = bookRepo.findById(id);
+	Book book = bookRepo.findById(id);
+	request.setAttribute("bookList", book);
+	request.getRequestDispatcher("/admin/home").forward(request, response);
+}
+
+@RequestMapping(value="/searchByUserId", method=RequestMethod.POST) 
+public void searchByUserId (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	long id = Long.parseLong(request.getParameter("id"));
+	List <Rental> rentalList = rentalRepo.findByUser(userRepo.findById(id));
+	List <Book> bookList = new ArrayList<>();
+	for (Rental rental : rentalList) {
+		bookList.add(rental.getBook());
+	}
 	request.setAttribute("bookList", bookList);
 	request.getRequestDispatcher("/admin/home").forward(request, response);
 }

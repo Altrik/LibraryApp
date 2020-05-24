@@ -1,6 +1,7 @@
 package pl.mysite.Library.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -15,7 +16,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import pl.mysite.Library.entity.Book;
+import pl.mysite.Library.entity.Rental;
 import pl.mysite.Library.repository.BookRepository;
+import pl.mysite.Library.repository.RentalRepository;
+import pl.mysite.Library.repository.UserRepository;
 
 @Controller
 @RequestMapping("/user") 
@@ -24,6 +28,11 @@ public class UserController {
 	@Autowired
 	BookRepository bookRepo;
 	
+	@Autowired
+	UserRepository userRepo;
+	
+	@Autowired
+	RentalRepository rentalRepo;
 	
 	@RequestMapping(value="/home")
 	public String home () {
@@ -35,16 +44,20 @@ public class UserController {
 	public void home (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		Long id = (Long) session.getAttribute("Id");
-		List <Book> borrowedBooks = bookRepo.findBorrowedByUser(id);
+		List <Rental> rentalList = rentalRepo.findByUser(userRepo.findById(id).get());
+		List <Book> borrowedBooks = new ArrayList<>();
+		for (Rental rental : rentalList) {
+			borrowedBooks.add(rental.getBook());
+		}
 		request.setAttribute("borrowedBooks", borrowedBooks);
 		request.getRequestDispatcher("/user/home").forward(request, response);
 	}
 	
-	@RequestMapping(value="/searchById", method=RequestMethod.POST) 
+	@RequestMapping(value="/searchById", method=RequestMethod.POST)
 	public void searchById (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		long id = Long.parseLong(request.getParameter("id"));
-		List <Book> bookList = bookRepo.findById(id);
-		request.setAttribute("bookList", bookList);
+		Book book = bookRepo.findById(id);
+		request.setAttribute("bookList", book);
 		request.getRequestDispatcher("/user/home").forward(request, response);
 	}
 	

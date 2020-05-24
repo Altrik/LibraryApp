@@ -35,8 +35,6 @@ public class User {
 	private Date created;
 	@ColumnDefault("false")
 	private boolean is_Admin;
-	@OneToMany(mappedBy = "borrowedTo")
-	private List <Book> borrowedBooks;
 	
 	
 	public User () {}
@@ -103,19 +101,9 @@ public class User {
 	public void setCreated(Date created) {
 		this.created = created;
 	}
-
-	public List<Book> getBorrowedBooks() {
-		return borrowedBooks;
-	}
-
-	public void setBorrowedBooks(List<Book> borrowedBooks) {
-		this.borrowedBooks = borrowedBooks;
-	}
-
 	public String getSalt() {
 		return salt;
 	}
-
 	public void setSalt(String salt) {
 		this.salt = salt;
 	}
