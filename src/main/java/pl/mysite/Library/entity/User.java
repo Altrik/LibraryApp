@@ -72,7 +72,7 @@ public class User {
 		return password;
 	}
 	public void setPassword(String password) {
-		this.password = BCrypt.hashpw(password, BCrypt.gensalt());
+		this.password = BCrypt.hashpw(password, this.salt);
 	}
 	public String getEmail() { 
 		return email;

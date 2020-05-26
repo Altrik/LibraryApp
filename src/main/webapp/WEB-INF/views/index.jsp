@@ -26,7 +26,8 @@
     </label><br>
     <input type="submit" name="send" value="Add book">
 </form>
-
+<br>
+<a href="http://localhost:8080/Library/admin/viewUsers">View Users</a>
 <br>
 <p>Search for books</p>
 <form id="formById" class="searchForm" action=<c:url value='/admin/searchById'/> method="post"> 

@@ -129,6 +129,69 @@ public void returnBook (@PathVariable String id, HttpServletRequest request, Htt
 	response.sendRedirect("http://localhost:8080/Library/admin/home");
 }
 
+
+@RequestMapping(value="/viewUsers", method= {RequestMethod.GET, RequestMethod.POST})
+public void viewUsers (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	List <User> userList = userRepo.findAll();
+	request.setAttribute("UserList", userList);
+	request.getRequestDispatcher("/admin/viewUsersPage").forward(request, response); 
+}
+
+@RequestMapping(value="/viewUsersPage", method= {RequestMethod.GET, RequestMethod.POST})
+public String viewUsersPage () {
+	return "viewUsersPage";
+}
+
+@RequestMapping(value="/editUser/{id}", method= {RequestMethod.GET, RequestMethod.POST})
+public void editUsers (@PathVariable String id, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	request.setAttribute("User", userRepo.findById(Long.parseLong(id)));
+	request.getRequestDispatcher("/admin/editUserPage").forward(request, response); 
+}
+
+@RequestMapping(value="/editUserPage", method= {RequestMethod.GET, RequestMethod.POST})
+public String editUserPage () {
+	return "editUserPage";
+}
+ 
+@RequestMapping(value="/editedUser", method= {RequestMethod.GET, RequestMethod.POST})
+public void editedUser (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	User user = userRepo.findById(Long.parseLong(request.getParameter("id")));
+	user.setLogin(request.getParameter("login"));
+	user.setEmail(request.getParameter("email"));
+	if (request.getParameter("isAdmin").equals("true")) {
+		user.setIs_Admin(true);
+	} else {
+		user.setIs_Admin(false);
+	}
+	userRepo.save(user);
+	response.sendRedirect("http://localhost:8080/Library/admin/home");
+}
+
+@RequestMapping(value="/changePassword/{id}", method= {RequestMethod.GET, RequestMethod.POST}) 
+public void changePassword (@PathVariable String id, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	request.setAttribute("User", userRepo.findById(Long.parseLong(id)));
+	request.getRequestDispatcher("/admin/changePasswordPage").forward(request, response);
+}
+
+@RequestMapping(value="/changePasswordPage", method= {RequestMethod.GET, RequestMethod.POST})
+public String editPasswordPage () {
+	return "editPasswordPage";
+}
+
+@RequestMapping(value="/changedPassword", method= {RequestMethod.GET, RequestMethod.POST}) 
+public void changedPassword (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	User user = userRepo.findById(Long.parseLong(request.getParameter("id")));
+	user.setPassword(request.getParameter("newPassword"));
+	userRepo.save(user);
+	response.sendRedirect("http://localhost:8080/Library/admin/home");
+}
+
+@RequestMapping(value="/deleteUser/{id}", method= {RequestMethod.GET, RequestMethod.POST}) 
+public void deleteUser (@PathVariable String id, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	userRepo.deleteById(Long.parseLong(id));
+	response.sendRedirect("http://localhost:8080/Library/admin/home"); 
+}
+
 @RequestMapping(value="/edit/{id}", method={RequestMethod.GET, RequestMethod.POST})
 public void editBook (@PathVariable String id, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	Book book = bookRepo.findById(Long.parseLong(id));
