@@ -10,7 +10,8 @@ import org.springframework.data.repository.query.Param;
 import pl.mysite.Library.entity.Book;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
-	public Book findById(long id);
+	public Book findBookById(long id);
+	public List <Book> findById(long id);
 	public List <Book> findByTitle(String title);
 	public List <Book> findByAuthor(String author);
 	public List <Book> findByDateOfAcquisition(Date dateOfAcquisition);

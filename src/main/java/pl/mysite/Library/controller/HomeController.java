@@ -59,7 +59,7 @@ public void deleteBook (@PathVariable String id, HttpServletRequest request, Htt
 
 @RequestMapping(value="/status/{id}", method= {RequestMethod.GET, RequestMethod.POST})
 public void changeStatusOfBook (@PathVariable String id, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	Book book = bookRepo.findById(Long.parseLong(id));
+	Book book = bookRepo.findBookById(Long.parseLong(id));
 	request.setAttribute("Book", book);
 	request.getRequestDispatcher("/admin/lendBook").forward(request, response);
 }
@@ -71,7 +71,7 @@ public String lendPage () {
 
 @RequestMapping(value="/lentBook", method= {RequestMethod.GET, RequestMethod.POST})
 public void lentBook (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	Book book = bookRepo.findById(Long.parseLong((String) request.getParameter("book_id")));
+	Book book = bookRepo.findBookById(Long.parseLong((String) request.getParameter("book_id")));
 	User user = userRepo.findById(Long.parseLong((String) request.getParameter("id")));
 	
 	book.setIsBorrowed(true);
@@ -84,7 +84,7 @@ public void lentBook (HttpServletRequest request, HttpServletResponse response) 
 
 @RequestMapping(value="return/{id}", method = {RequestMethod.GET, RequestMethod.POST})
 public void returnPage (@PathVariable String id, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	Book book = bookRepo.findById(Long.parseLong(id));
+	Book book = bookRepo.findBookById(Long.parseLong(id));
 	Rental rental = rentalRepo.findByBook(book);
 	
 	LocalDate currentDate = LocalDate.now();
@@ -121,7 +121,7 @@ public String returnPage () {
 
 @RequestMapping(value="/returnedBook/{id}", method= {RequestMethod.GET, RequestMethod.POST})
 public void returnBook (@PathVariable String id, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	Book book = bookRepo.findById(Long.parseLong(id));
+	Book book = bookRepo.findBookById(Long.parseLong(id));
 	Rental rental = rentalRepo.findByBook(book);
 	book.setIsBorrowed(false);
 	rentalRepo.delete(rental);
@@ -194,7 +194,7 @@ public void deleteUser (@PathVariable String id, HttpServletRequest request, Htt
 
 @RequestMapping(value="/edit/{id}", method={RequestMethod.GET, RequestMethod.POST})
 public void editBook (@PathVariable String id, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	Book book = bookRepo.findById(Long.parseLong(id));
+	Book book = bookRepo.findBookById(Long.parseLong(id));
 	request.setAttribute("Book", book);
 	request.getRequestDispatcher("/admin/editBook").forward(request, response); 
 }
@@ -206,7 +206,7 @@ public String editPage () {
 
 @RequestMapping(value="/edited", method={RequestMethod.GET, RequestMethod.POST}) 
 public void saveEditedBook (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	Book book = bookRepo.findById(Long.parseLong(request.getParameter("id")));
+	Book book = bookRepo.findBookById(Long.parseLong(request.getParameter("id")));
 	book.setTitle(request.getParameter("title"));
 	book.setAuthor(request.getParameter("author"));
 	book.setReleaseDate(Integer.parseInt(request.getParameter("releaseDate")));
@@ -222,8 +222,9 @@ public void saveEditedBook (HttpServletRequest request, HttpServletResponse resp
 @RequestMapping(value="/searchById", method=RequestMethod.POST) 
 public void searchById (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	long id = Long.parseLong(request.getParameter("id"));
-	Book book = bookRepo.findById(id);
-	request.setAttribute("bookList", book);
+	List <Book> bookList = bookRepo.findById(id);
+	request.setAttribute("bookList", bookList);
+	System.out.println(bookList);
 	request.getRequestDispatcher("/admin/home").forward(request, response);
 }
 

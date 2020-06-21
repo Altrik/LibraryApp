@@ -5,173 +5,91 @@ $(function () {
         $(this).toggleClass("test");
     });
 
-    
-
-
-    /*
-    var forms = $(".searchForm");
-    forms.on("submit", function (event) {
-        console.log("Event done");
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        var formType = $(this).attr('id');
-        console.log(formType);
-        switch (formType) {
-            case "formById":
-                console.log("ID");
-                getSearchResultListById ();
-                break;
-            case "formByAuthor":
-                console.log("Author");
-                getSearchResultListByAuthor ();
-                break;
-            case "formByTitle":
-                console.log("Title");
-                getSearchResultListByTitle ();
-                break;
-            case "formByDate":
-                console.log("Date");
-                getSearchResultListByDate ();
-                break;
-            case "formByStatus":
-                console.log("Status");
-                getSearchResultListByStatus ();
-                break;
+    var registerForm = $("#registerForm");
+    registerForm.on("submit", function(event){
+        var email = document.forms["registerForm"]["email"].value;
+        console.log(email);
+        var pattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        if (pattern.test(email)==false) {
+            alert("Invalid Email, please enter valid Email.");
+            event.preventDefault();
         }
     });
 
-    var whenAjaxDone = function (object) {
-        console.log("Found books");
-        var anchor = $("#searchAnchor");
-        anchor.empty();
-        var tableHeader = $("<div id='tableHeader'><table><tr><th>ID</th><th>Title</th><th>Author</th><th>Date of Acquisition</th><th>Status</th></tr>");
-        var tableEnd = $("</table></div>");
-        anchor.append(tableHeader);
-        object.forEach(function (element) {
-            console.log("Entered the Loop");
-            var elemID = JSON.stringify(element.id);
-            console.log(elemID);
-            var elemTitle = JSON.stringify(element.title);
-            console.log(elemTitle);
-            var elemAuthor = JSON.stringify(element.author);
-            console.log(elemAuthor);
-            var elemDate = JSON.stringify(element.dateOfAcquisition);
-            console.log(elemDate);
-            var elemIsBorrowed = JSON.stringify(element.isBorrowed);
-            console.log(elemIsBorrowed);
-
-            var tableContent = "<tr><td>" + elemID + "</td><td>" + elemTitle + "</td><td>" + elemAuthor + "</td><td>" + elemDate + "</td><td>" + elemIsBorrowed + "</td></tr>";
-            tableHeader.append(tableContent);
-        });
-        tableHeader.append(tableEnd);
-    }
-    function getSearchResultListById () { 
-        $.ajax  ({
-            type: "POST",
-            url: "searchById",
+    var loginField = $("#loginField");
+    var loginAlertFlag = 0;
+    var registerSubmitButton = $("#submitButton");
+    loginField.on("change", function(event){
+        $.ajax({
+            url: "http://localhost:8080/Library/loginExists/" + loginField.val(),
             datatype: "json",
-            contentType: "application/json",
+            crossDomain: true
         })
-        .done(function(object) {
-            console.log("SUCCESS");
-            whenAjaxDone (object)})
-        .fail(function (a1, a2, a3) {
-            console.log("FAIL");
-            console.log(a1);
-            console.log(a2);
-            console.log(a3);
-        })
-        .always(function () {
-            console.log("DONE");
-        })
-    }
+            .done(function(data){
+                console.log(data);
+                if (data==true) {
+                    if (loginAlertFlag==0) {
+                        var alert = $("<div id='loginAlert' class='alert alert-danger' role='alert'>Such login already exists.</div>");
+                        loginAlertFlag = 1;
+                        registerSubmitButton.after(alert);
+                    }
+                    registerSubmitButton.prop("disabled", true);
+                } else {
+                    registerSubmitButton.prop("disabled", false);
+                    if (loginAlertFlag==1) {
+                        $("#loginAlert").remove();
+                        loginAlertFlag=0;
+                    }
+                    if (emailAlertFlag==0 && loginAlertFlag==0) {
+                        registerSubmitButton.prop("disabled", false);
+                    }
+                }
+            })
+            .fail(function (xhl, error1, error2) {
+                console.log("http://localhost:8080/Library/loginExists/" + loginField.val());
+                console.log("Failed miserably");
+                console.log(xhl);
+                console.log(error1);
+                console.log(error2);
+            }
+    )});
 
-    function getSearchResultListByTitle () {
-        $.ajax  ({
-            type: "POST",
-            url: "searchByTitle",
+    var emailField = $("#emailField");
+    var emailAlertFlag = 0;
+    emailField.on("change", function(event){
+        $.ajax({
+            url: "http://localhost:8080/Library/emailExists/" + emailField.val().replaceAll(".", "$"),
             datatype: "json",
-            //contentType: "application/json",
-            //data: JSON.stringify({id: id, title: title, author: author, dateOfAcquisition: dateOfAcquisition, isBorrowed: isBorrowed})
+            crossDomain: true
         })
-        .done(function(object) {
-            console.log("SUCCESS");
-            whenAjaxDone (object)})
-        .fail(function (a1, a2, a3) {
-            console.log("FAIL");
-            console.log(a1);
-            console.log(a2);
-            console.log(a3);
-        })
-        .always(function () {
-            console.log("DONE");
-        })
-    }
+            .done(function(data){
+                console.log(data);
+                console.log(emailField.val().replaceAll(".", "$"));
+                if (data==true) {
+                    if (emailAlertFlag==0) {
+                        var alert = $("<div id='emailAlert' class='alert alert-danger' role='alert'>Such email already exists.</div>");
+                        emailAlertFlag = 1;
+                        registerSubmitButton.after(alert);
+                    }
+                    registerSubmitButton.prop("disabled", true);
+                } else {
+                    if (emailAlertFlag==1) {
+                        $("#emailAlert").remove();
+                        emailAlertFlag=0;
+                    }
+                    if (emailAlertFlag==0 && loginAlertFlag==0) {
+                        registerSubmitButton.prop("disabled", false);
+                    }
+                }
+            })
+            .fail(function (xhl, error1, error2) {
+                console.log("http://localhost:8080/Library/emailExists/" + emailField.val().replaceAll(".", "$"));
+                console.log("Failed miserably");
+                console.log(emailField.val().replaceAll(".", "$"));
+                console.log(xhl);
+                console.log(error1);
+                console.log(error2);
+            }
+    )});
 
-    function getSearchResultListByAuthor () {
-        $.ajax  ({
-            type: "POST",
-            url: "searchByAuthor",
-            datatype: "json",
-            //contentType: "application/json",
-            //data: JSON.stringify({id: id, title: title, author: author, dateOfAcquisition: dateOfAcquisition, isBorrowed: isBorrowed})
-        })
-        .done(function(object) {
-            console.log("SUCCESS");
-            whenAjaxDone (object)})
-        .fail(function (a1, a2, a3) {
-            console.log("FAIL");
-            console.log(a1);
-            console.log(a2);
-            console.log(a3);
-        })
-        .always(function () {
-            console.log("DONE");
-        })
-    }
-
-    function getSearchResultListByDate () {
-        $.ajax  ({
-            type: "POST",
-            url: "searchByDate",
-            datatype: "json",
-            //contentType: "application/json",
-            //data: JSON.stringify({id: id, title: title, author: author, dateOfAcquisition: dateOfAcquisition, isBorrowed: isBorrowed})
-        })
-        .done(function(object) {
-            console.log("SUCCESS");
-            whenAjaxDone (object)})
-        .fail(function (a1, a2, a3) {
-            console.log("FAIL");
-            console.log(a1);
-            console.log(a2);
-            console.log(a3);
-        })
-        .always(function () {
-            console.log("DONE");
-        })
-    }
-
-    function getSearchResultListByStatus () {
-        $.ajax  ({
-            type: "POST",
-            url: "searchByStatus",
-            datatype: "json",
-            //contentType: "application/json",
-            //data: JSON.stringify({id: id, title: title, author: author, dateOfAcquisition: dateOfAcquisition, isBorrowed: isBorrowed})
-        })
-        .done(function(object) {
-            console.log("SUCCESS");
-            whenAjaxDone (object)})
-        .fail(function (a1, a2, a3) {
-            console.log("FAIL");
-            console.log(a1);
-            console.log(a2);
-            console.log(a3);
-        })
-        .always(function () {
-            console.log("DONE");
-        })
-    }
-    */
 });

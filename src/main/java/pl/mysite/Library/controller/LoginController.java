@@ -10,8 +10,10 @@ import javax.servlet.http.HttpSession;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import pl.mysite.Library.entity.User;
 import pl.mysite.Library.repository.UserRepository;
@@ -36,8 +38,8 @@ public class LoginController {
 				User userTest = userRepo.findByLogin(login);
 				String salt = userTest.getSalt();
 				User user = userRepo.findByLoginAndPassword(login, BCrypt.hashpw(password, salt));
-			if (BCrypt.checkpw(password, user.getPassword())) {
-				if (user!=null) {			
+			if (user!=null) {
+				if (BCrypt.checkpw(password, user.getPassword())) {			
 					HttpSession session = request.getSession();
 					session.setAttribute("login", login);
 					session.setAttribute("password", user.getPassword());
@@ -65,4 +67,21 @@ public class LoginController {
 		response.sendRedirect("http://localhost:8080/Library/");
 	}
 	
+	@RequestMapping(value="/loginExists/{login}", method=RequestMethod.GET)
+	@ResponseBody
+	public Boolean doesLoginExist (@PathVariable String login) {
+		if (userRepo.findByLogin(login)!=null) {
+			return true;
+		}
+		return false;
+	}
+	
+	@RequestMapping(value="/emailExists/{email}", method=RequestMethod.GET)
+	@ResponseBody
+	public Boolean doesEmailExist (@PathVariable String email) {
+		if (userRepo.findByEmail(email.replaceAll("\\$", "\\."))!=null) {
+			return true;
+		}
+		return false;
+	}
 }

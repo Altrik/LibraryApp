@@ -56,23 +56,23 @@ public class UserController {
 	@RequestMapping(value="/searchById", method=RequestMethod.POST)
 	public void searchById (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		long id = Long.parseLong(request.getParameter("id"));
-		Book book = bookRepo.findById(id);
-		request.setAttribute("bookList", book);
-		request.getRequestDispatcher("/user/home").forward(request, response);
+		List <Book> bookList = bookRepo.findById(id);
+		request.setAttribute("bookList", bookList);
+		request.getRequestDispatcher("/user/borrowedBooks").forward(request, response);
 	}
 	
 	@RequestMapping(value="/searchByAuthor", method=RequestMethod.POST) 
 	public void searchByAuthor (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		List <Book> bookList = bookRepo.findByAuthor(request.getParameter("author"));
 		request.setAttribute("bookList", bookList);
-		request.getRequestDispatcher("/user/home").forward(request, response); 
+		request.getRequestDispatcher("/user/borrowedBooks").forward(request, response);
 	}
 
 	@RequestMapping(value="/searchByTitle", method=RequestMethod.POST) 
 	public void searchByTitle (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		List <Book> bookList = bookRepo.findByTitle(request.getParameter("title"));
 		request.setAttribute("bookList", bookList);
-		request.getRequestDispatcher("/user/home").forward(request, response); 
+		request.getRequestDispatcher("/user/borrowedBooks").forward(request, response); 
 	}
 
 	@RequestMapping(value="/searchByDate", method=RequestMethod.POST) 
@@ -81,7 +81,7 @@ public class UserController {
 		java.sql.Date fixedSqlDate = new java.sql.Date(sqlDate.getTime()+24*60*60*1000);
 		List <Book> bookList = bookRepo.findByDateOfAcquisition(fixedSqlDate);
 		request.setAttribute("bookList", bookList);
-		request.getRequestDispatcher("/user/home").forward(request, response); 
+		request.getRequestDispatcher("/user/borrowedBooks").forward(request, response); 
 	}
 
 	@RequestMapping(value="/searchByStatus", method=RequestMethod.POST) 
@@ -90,7 +90,7 @@ public class UserController {
 		Boolean isBorrowed = Boolean.parseBoolean(request.getParameter("isBorrowed"));
 		List <Book> bookList = bookRepo.findByIsBorrowed(isBorrowed);
 		request.setAttribute("bookList", bookList);
-		request.getRequestDispatcher("/user/home").forward(request, response);
+		request.getRequestDispatcher("/user/borrowedBooks").forward(request, response);
 	}
 	
 	@RequestMapping(value="/searchByReleaseDate", method=RequestMethod.POST) 
@@ -99,6 +99,6 @@ public class UserController {
 		int releaseDate = Integer.parseInt(request.getParameter("releaseDate"));
 		List <Book> bookList = bookRepo.findByReleaseDate(releaseDate);
 		request.setAttribute("bookList", bookList);
-		request.getRequestDispatcher("/user/home").forward(request, response);
+		request.getRequestDispatcher("/user/borrowedBooks").forward(request, response);
 	}
 }

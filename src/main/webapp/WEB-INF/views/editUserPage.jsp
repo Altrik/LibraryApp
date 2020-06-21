@@ -6,37 +6,49 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="ISO-8859-1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Edit User</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<link rel="stylesheet" href="<c:url value='/resources/css/style.css'/>">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="<c:url value='/resources/js/app.js'/>"></script>
 </head>
 <body>
-<%
-    User user = (User) request.getAttribute("User");
-%>
-<form id="editUserForm" action=<c:url value='/admin/editedUser'/> method="post">
-    <input type="hidden" name="id" value="<%= user.getId() %>">
-    <label>Login
-        <input type="text" name="login" value="<%= user.getLogin() %>">
-    </label><br>
-    <label>Email
-        <input type="text" name="email" value="<%= user.getEmail() %>">
-    </label><br>
-    <label>Admin Status<br>
-        <% 
-            if (user.isIs_Admin()==true) {
-                %>
-                <input type="radio" name="isAdmin" value="true" checked>Admin<br>
-                <input type="radio" name="isAdmin" value="false">User<br>
-                <%
-            } else {
-                %>
-                <input type="radio" name="isAdmin" value="true">Admin<br>
-                <input type="radio" name="isAdmin" value="false" checked>User<br>
-                <%
-            }
-        %>
-    </label><br>
-    <input type="submit" name="send" value="Edit User">
-</form>
+<div class="container">
+    <%
+        User user = (User) request.getAttribute("User");
+    %>
+    <hr>
+    <h3>Edit User</h3>
+    <form id="editUserForm" action=<c:url value='/admin/editedUser'/> method="post">
+        <input type="hidden" name="id" value="<%= user.getId() %>">
+        <label>Login
+            <input id="loginField" type="text" name="login" value="<%= user.getLogin() %>">
+        </label><br>
+        <label>Email
+            <input id="emailField" type="email" name="email" value="<%= user.getEmail() %>">
+        </label><br>
+        <label>Admin Status<br>
+            <% 
+                if (user.isIs_Admin()==true) {
+                    %>
+                    <input type="radio" name="isAdmin" value="true" checked>Admin<br>
+                    <input type="radio" name="isAdmin" value="false">User<br>
+                    <%
+                } else {
+                    %>
+                    <input type="radio" name="isAdmin" value="true">Admin<br>
+                    <input type="radio" name="isAdmin" value="false" checked>User<br>
+                    <%
+                }
+            %>
+        </label><br>
+        <input class="btn btn-primary" type="submit" id="submitButton" name="send" value="Edit User">
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 </body>
 </html>
